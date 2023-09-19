@@ -453,6 +453,20 @@ class FlutterPtyBindings {
   late final _pty_getpid =
       _pty_getpidPtr.asFunction<int Function(ffi.Pointer<PtyHandle>)>();
 
+  void close_terminal(
+    ffi.Pointer<PtyHandle> handle,
+  ) {
+    return _close_terminal(
+      handle,
+    );
+  }
+
+  late final _close_terminalPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<PtyHandle>)>>(
+          'close_terminal');
+  late final _close_terminal =
+      _close_terminalPtr.asFunction<void Function(ffi.Pointer<PtyHandle>)>();
+
   ffi.Pointer<ffi.Char> pty_error() {
     return _pty_error();
   }

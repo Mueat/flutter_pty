@@ -85,9 +85,9 @@ class Pty {
 
     // build argv
     final argv = calloc<Pointer<Utf8>>(arguments.length + 2);
-    argv.elementAt(0).value = executable.toNativeUtf8();
+    // argv.elementAt(0).value = executable.toNativeUtf8();
     for (var i = 0; i < arguments.length; i++) {
-      argv.elementAt(i + 1).value = arguments[i].toNativeUtf8();
+      argv.elementAt(i).value = arguments[i].toNativeUtf8();
     }
     argv.elementAt(arguments.length + 1).value = nullptr;
 
@@ -188,7 +188,14 @@ class Pty {
   /// Linux and OS X. The default signal is [ProcessSignal.sigterm]
   /// which will normally terminate the process.
   bool kill([ProcessSignal signal = ProcessSignal.sigterm]) {
-    return Process.killPid(pid, signal);
+    if (!_exitCodeCompleter.isCompleted) {
+      return Process.killPid(pid, signal);
+    }
+    return true;
+  }
+
+  void closeTerminal() {
+    return _bindings.close_terminal(_handle);
   }
 
   /// indicates that a data chunk has been processed.
